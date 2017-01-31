@@ -95,7 +95,22 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+/*
+.flex-container {
+  display: -webkit-flex;
+  display: flex;
+}
+*/
 
+.flex-container {
+  -webkit-flex-direction: strech; /* Safari */
+  flex-direction:         strech;
+}
+
+.flex-item {
+  -webkit-flex-grow: 2; /* Safari */
+  flex-grow:         2;
+}
 
 
 
