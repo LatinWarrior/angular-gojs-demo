@@ -15,9 +15,9 @@
 			let ctrl = this;
 			let _$ = go.GraphObject.make;			
 			ctrl.model = [
-				{ name: 'Alpha', source: '/app/images/cat1.png'},
-				{ name: 'Beta', source: '/app/images/cat2.png'},
-				{ name: 'Gamma', source: '/app/images/cat3.png'}
+				{ key: '1', name: 'Alpha', source: '/app/images/cat1.png'},
+				{ key: '2', parent: '1', name: 'Beta', source: '/app/images/cat2.png'},
+				{ key: '3', parent: '1', name: 'Gamma', source: '/app/images/cat3.png'}
 			];
 			ctrl.name = 'familyGuyDiagram';
 			ctrl.id = 'familyGuyDiagramId';

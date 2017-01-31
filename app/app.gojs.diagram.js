@@ -69,35 +69,46 @@
 		      new go.Binding("text", "name"))
 		  );
 
-		var myModel = $$(go.Model);
+		let myModel = $$(go.Model);
 
 		myModel.nodeDataArray = ctrl.model;
 		
 		diagram.model = myModel;
 
-	}
+		let palette = $$(go.Palette, "myPaletteId", {
+         	// nodeTemplateMap: diagram.nodeTemplateMap,
+          	// groupTemplateMap: diagram.groupTemplateMap,
+          	layout: $$(go.GridLayout, { wrappingColumn: 1, alignment: go.GridLayout.Position })
+        });
+	    palette.model = new go.GraphLinksModel([
+	      	{ text: "lightgreen", color: "#ACE600" },
+	      	{ text: "yellow", color: "#FFDD33" },
+	      	{ text: "lightblue", color: "#33D3E5" }
+	    ]);
 
-	// whenever a GoJS transaction has finished modifying the model, update all Angular bindings
-	function updateAngular(e) {
-		if (e.isTransactionFinished) {
-		 	scope.$apply();
+	    // Whenever a GoJS transaction has finished modifying the model, update all Angular bindings
+		function updateAngular(e) {
+			if (e.isTransactionFinished) {
+			 	$scope.$apply();
+			}
 		}
-	}
 
-	// update the Angular model when the Diagram.selection changes
-	function updateSelection(e) {
-		diagram.model.selectedNodeData = null;
-		var it = diagram.selection.iterator;
-		while (it.next()) {
-			  var selnode = it.value;
-			  // ignore a selected link or a deleted node
-			  if (selnode instanceof go.Node && selnode.data !== null) {
-				    diagram.model.selectedNodeData = selnode.data;
-				    break;
-			  }
+		// Update the Angular model when the Diagram.selection changes
+		function updateSelection(e) {
+			diagram.model.selectedNodeData = null;
+			var it = diagram.selection.iterator;
+			while (it.next()) {
+				  var selnode = it.value;
+				  // ignore a selected link or a deleted node
+				  if (selnode instanceof go.Node && selnode.data !== null) {
+					    diagram.model.selectedNodeData = selnode.data;
+					    break;
+				  }
+			}
+			$scope.$apply();
 		}
-		scope.$apply();
-	}
+
+	}	
 
 	module.component('gojsDiagram', {			
 			transclude: true,				
