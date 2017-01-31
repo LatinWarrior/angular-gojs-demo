@@ -2,117 +2,56 @@
 
 	"use strict";
 
-	module.component('gojsDiagram', {
-			transclude: true,
-			templateUrl: 'app/app.gojs.diagram.html',			
-			bindings: {
-				name: '@',
-				width: '@',
-				height: '@',
-				class: '@',
-				style: '@',
-				bcolor: '@',
-				model: '=gojsModel'
-			},
-			controller: ['$scope', 'go', '$$', controller],
-			link: function(scope, element, attrs) {
-				console.log('In link of gojsDiagram');
-				// Create an alias for the make object.
-				// let _$ = go.GraphObject.make,
-				// 	diagramName = scope.name || 'myDiagramName',
-				// 	width = scope.width || '200',
-				// 	height = scope.height || '100',
-				// 	bcolor = scope.bcolor || '#DAE4E4;',
-				// 	style = 'background-color: ' + bcolor + '; width: ' + width + '; height: ' + height + ';'
-				// 	initialModel = scope.model || [{ key: 'No model provided' }];
+	function template($element, $attrs){
 
-				// // Create a Diagram for the given HTML DIV element
-				// var diagram = _$(go.Diagram, diagramName, {
-				// 	// Center diagram contents.
-				// 	initialContentAlignment: go.Spot.Center,
-				// 	// Enable Ctrl-Z to undo and Ctrl-Y to redo.
-				// 	"undoManager.isEnabled": true
-				// });
+		let myCrap = this;		
 
-				// var model = _$(initialModel);
+		console.log('myCrap: ', myCrap);		
 
-				// diagram.model = model;
+		console.log('Inside of templateUrl. $element: ', $element);
 
-				function updateAngular(e){
-					if (e.isTransactionFinished) {
-		              scope.$apply();
-		            }
-				}
+		console.log('Inside of templateUrl. $element[0]: ', $element[0]);
 
-				function updateSelection(e){
-					diagram.model.selectedNodeData = null;
-		            var it = diagram.selection.iterator;
-		            while (it.next()) {
-		              var selnode = it.value;
-		              // ignore a selected link or a deleted node
-		              if (selnode instanceof go.Node && selnode.data !== null) {
-		                diagram.model.selectedNodeData = selnode.data;
-		                break;
-		              }
-		            }
-		            scope.$apply();
-				}
+		console.log('Inside of templateUrl begin');
 
-				scope.$watch('model', function(newModel){
-					var oldModel = diagram.model;
-		            if (oldModel !== newModel) {
-		              diagram.removeDiagramListener("ChangedSelection", updateSelection);
-		              diagram.model = newModel;
-		              diagram.addDiagramListener("ChangedSelection", updateSelection);
-		            }
-				});
+		let diagram = $element[0].querySelector('#myDiagram');
 
-				scope.$watch('model.selectedNodeData.name', function(newName) {
-					if (!diagram.model.selectedNodeData) 
-						return;
+		console.log('diagram: ', diagram);
 
-		            // Disable recursive updates
-		            diagram.removeModelChangedListener(updateAngular);
-		            // Change the name
-		            diagram.startTransaction("change name");
-		            // The data property has already been modified, so setDataProperty would have no effect
-		            var node = diagram.findNodeForData(diagram.model.selectedNodeData);
+		console.log('Inside of temaplateUrl end');
 
-		            if (node !== null) 
-		            	node.updateTargetBindings("name");
-
-		            diagram.commitTransaction("change name");
-		            // Re-enable normal updates
-		            diagram.addModelChangedListener(updateAngular);
-		          });
-			}		
-	});
+		return 'app/app.gojs.diagram.html' 
+	}
 
 	function controller($scope, go, $$) {
 		console.log('In gojs Diagram');
 		console.log('$scope: ', $scope);
 		let ctrl = this;
-		console.log('In gojs diagram ctrl: ', ctrl);
-		ctrl.go = go;
-		ctrl.name = 'Peter Griffin';
-		console.log('ctrl Width: ', ctrl.width);
-		console.log('scope Width: ', $scope.width);
-		console.log('Diagram Name: ', ctrl.diagramName);
-		console.log('go: ', go);
-		console.log('$$', $$);
+		// console.log('In gojs diagram ctrl: ', ctrl);
+		//ctrl.go = go;
+		// ctrl.name = 'Peter Griffin';
+		// console.log('ctrl Width: ', ctrl.width);
+		// console.log('scope Width: ', $scope.width);
+		// console.log('Diagram Name: ', ctrl.diagramName);
+		// console.log('go: ', go);
+		// console.log('$$', $$);
 		console.log('$scope.$parent.$ctrl.model', $scope.$parent.$ctrl.model);
-		console.log('ctrl.model', ctrl);
+		console.log('ctrl', ctrl);
+		console.log('$scope.id', $scope.$parent.$ctrl.id);
+
+		let parent = $scope.$parent.$ctrl;		
 		
-		let diagramName = $scope.name || 'myDiagramName',
-			width = $scope.width || '200',
-			height = $scope.height || '100',
-			bcolor = $scope.bcolor || '#DAE4E4;',
-			style = $scope.style || 'background-color: ' + bcolor + '; width: ' + width + '; height: ' + height + ';',
-			initialModel = $scope.model || [{ key: 'No model provided' }];
+		ctrl.name = parent.name || 'myDiagramName';
+		//ctrl.id = parent.id || 'myDiagramId';
+		ctrl.width = parent.width || '200';
+		ctrl.height = parent.height || '100';
+		ctrl.bcolor = parent.bcolor || '#DAE4E4;';
+		ctrl.style = parent.style || 'background-color: ' + ctrl.bcolor + '; width: ' + ctrl.width + '; height: ' + ctrl.height + ';';
+		ctrl.model = parent.model || [{ key: 'No model provided' }];
 
 		// Create a Diagram for the given HTML DIV element
 
-		var diagram = $$(go.Diagram, 'myDiagram', {
+		var diagram = $$(go.Diagram, "myDiagramId", {
 			// Center diagram contents.
 			initialContentAlignment: go.Spot.Center,
 			// Enable Ctrl-Z to undo and Ctrl-Y to redo.
@@ -121,10 +60,25 @@
 
 		var myModel = $$(go.Model);
 
-		myModel.nodeDataArray = $scope.$parent.$ctrl.model;
+		myModel.nodeDataArray = ctrl.model;
 		
 		diagram.model = myModel;
 
 	}
+
+	module.component('gojsDiagram', {			
+			transclude: true,				
+			bindings: {
+				name: '@',				
+				width: '@',
+				height: '@',
+				class: '@',
+				style: '@',
+				bcolor: '@',
+				model: '=gojsModel'
+			},
+			controller: ['$scope', 'go', '$$', controller],
+			templateUrl: ['$element', '$attrs', template]			
+	});	
 
 }(angular.module('myApp')));

@@ -20,6 +20,7 @@
 				{ key: 'Gamma'}
 			];
 			ctrl.name = 'familyGuyDiagram';
+			ctrl.id = 'familyGuyDiagramId';
 			ctrl.width = '305';
 			ctrl.height = '175';
 			ctrl.bcolor = '#fff000';
