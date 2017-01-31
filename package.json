@@ -1,0 +1,22 @@
+{
+  "name": "gojs-demo",
+  "version": "1.0.0",
+  "description": "Angular GoJS",
+  "main": "app/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lite": "lite-server",
+    "start": "\"lite-server\""
+  },
+  "keywords": [
+    "GoJS",
+    "AngularJS"
+  ],
+  "author": "Luis Blanco",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.6.1",
+    "gojs": "^1.6.23",
+    "modernizr": "^3.3.1"
+  }
+}
