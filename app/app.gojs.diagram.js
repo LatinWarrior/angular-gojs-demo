@@ -114,6 +114,8 @@
 		
 		diagram.model = myModel;
 
+		console.log('diagram.model: ', diagram.model);
+
 		let palette = $$(go.Palette, "myPaletteId", {
          	// nodeTemplateMap: diagram.nodeTemplateMap,
           	// groupTemplateMap: diagram.groupTemplateMap,
@@ -125,7 +127,7 @@
 	      	{ text: "lightblue", color: "#33D3E5" }
 	    ]);
 
-	    document.getElementById("displayModel").value = diagram.model.toJson();
+	    // document.getElementById("displayModel").value = diagram.model.toJson();
 
 	    // Whenever a GoJS transaction has finished modifying the model, update all Angular bindings
 		function updateAngular(e) {			
@@ -150,6 +152,33 @@
 			}
 			$scope.$apply();
 		}
+
+		// notice when the value of "model" changes: update the Diagram.model
+          $scope.$watch("model", function(newModel) {
+          	console.log('In watch model. diagram: ', diagram.model);
+          	console.log('In watch model. newModel: ', newModel);
+            var oldmodel = diagram.model;
+            if (newModel && oldmodel !== newModel) {
+              diagram.removeDiagramListener("ChangedSelection", updateSelection);
+              diagram.model = newModel;
+              diagram.addDiagramListener("ChangedSelection", updateSelection);
+            }
+          });
+
+          $scope.$watch("model.selectedNodeData.name", function(newName) {
+          	console.log('In watch model.selectedNodeData.name', diagram.model.selectedNodeData);
+            if (!diagram.model.selectedNodeData) return;
+            // disable recursive updates
+            diagram.removeModelChangedListener(updateAngular);
+            // change the name
+            diagram.startTransaction("change name");
+            // the data property has already been modified, so setDataProperty would have no effect
+            var node = diagram.findNodeForData(diagram.model.selectedNodeData);
+            if (node !== null) node.updateTargetBindings("name");
+            diagram.commitTransaction("change name");
+            // re-enable normal updates
+            diagram.addModelChangedListener(updateAngular);
+          });
 
 	}	
 
