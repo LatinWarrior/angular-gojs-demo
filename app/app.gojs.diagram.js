@@ -2,24 +2,10 @@
 
 	"use strict";
 
-	function template($element, $attrs){
-
-		let myCrap = this;		
-
-		// console.log('myCrap: ', myCrap);		
-
-		// console.log('Inside of templateUrl. $element: ', $element);
-
-		// console.log('Inside of templateUrl. $element[0]: ', $element[0]);
-
-		// console.log('Inside of templateUrl begin');
+	function template($element, $attrs) {				
 
 		let diagram = $element[0].querySelector('#myDiagram');
-
-		// console.log('diagram: ', diagram);
-
-		// console.log('Inside of temaplateUrl end');
-
+		
 		return 'app/app.gojs.diagram.html' 
 	}
 
@@ -121,18 +107,20 @@
           	// groupTemplateMap: diagram.groupTemplateMap,
           	layout: $$(go.GridLayout, { wrappingColumn: 1, alignment: go.GridLayout.Position })
         });
+
 	    palette.model = new go.GraphLinksModel([
-	      	{ text: "lightgreen", color: "#ACE600" },
-	      	{ text: "yellow", color: "#FFDD33" },
-	      	{ text: "lightblue", color: "#33D3E5" }
-	    ]);
+	      	{ key: "lightgreen", color: "#ACE600" },
+	      	{ key: "yellow", color: "#FFDD33" },
+	      	{ key: "lightblue", color: "#33D3E5" }
+	    ]);	    
 
 	    // document.getElementById("displayModel").value = diagram.model.toJson();
 
 	    // Whenever a GoJS transaction has finished modifying the model, update all Angular bindings
-		function updateAngular(e) {			
-			if (e.isTransactionFinished) {				
-				// console.log('In updateAngular');
+		function updateAngular(event) {			
+			if (event.isTransactionFinished) {				
+				console.log('In updateAngular');
+				//ctrl.updateModel(e);
 			 	$scope.$apply();
 			}
 		}
@@ -152,6 +140,19 @@
 			}
 			$scope.$apply();
 		}
+
+		ctrl.$onChanges = function(changes) {
+			let isFirstChange = changes.model.isFirstChange();
+			if (isFirstChange) {
+				console.log('In onChanges hook. isFirstChange: ', isFirstChange);
+				return;
+			}			
+			if (changes.model) {
+				// Copy the current model here.
+				console.log('In onChanges hook. changes: ', changes);
+			}
+			
+		};		
 
 		// notice when the value of "model" changes: update the Diagram.model
           $scope.$watch("model", function(newModel) {
@@ -191,7 +192,7 @@
 				class: '@',
 				style: '@',
 				bcolor: '@',
-				model: '=gojsModel'
+				model: '<gojsModel'
 			},
 			controller: ['$scope', 'go', '$$', controller],
 			templateUrl: ['$element', '$attrs', template]			
